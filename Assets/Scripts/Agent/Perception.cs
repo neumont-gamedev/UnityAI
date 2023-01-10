@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class Perception : MonoBehaviour
 {
+	public string tagName = "";
 	[Range(1, 40)] public float distance = 1;
 	[Range(0, 180)] public float maxAngle = 45;
+
 
 	public GameObject[] GetGameObjects()
 	{
@@ -15,8 +17,19 @@ public class Perception : MonoBehaviour
 		foreach (Collider collider in colliders) 
 		{
 			if (collider.gameObject == gameObject) continue;
+			if (tagName == "" || collider.CompareTag(tagName))
+			{
+				// calculate angle from transform forward vector to direction of game object
+				Vector3 direction = (collider.transform.position - transform.position).normalized;
+				float cos = Vector3.Dot(transform.forward, direction);
+				float angle = Mathf.Acos(cos) * Mathf.Rad2Deg;
+				// if angle is less than max angle, add game object
+				if (angle <= maxAngle)
+				{
+					result.Add(collider.gameObject);
+				}
+			}
 
-			result.Add(collider.gameObject);
 		}
 
 		return result.ToArray();
