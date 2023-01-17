@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,12 +6,14 @@ using UnityEngine;
 public class AutonomousAgent : Agent
 {
 	public Perception flockPerception;
+	public ObstacleAvoidance obstacleAvoidance;
 	public AutonomousAgentData data;
 
 	public float wanderAngle { get; set; } = 0;
 
 	void Update()
 	{
+		// seek / flee
 		var gameObjects = perception.GetGameObjects();
 		if (gameObjects.Length > 0)
 		{
@@ -18,6 +21,7 @@ public class AutonomousAgent : Agent
 			movement.ApplyForce(Steering.Flee(this, gameObjects[0]) * data.fleeWeight);
 		}
 
+		// flocking
 		gameObjects = flockPerception.GetGameObjects();
 		if (gameObjects.Length > 0)
 		{
@@ -29,8 +33,15 @@ public class AutonomousAgent : Agent
 			movement.ApplyForce(Steering.Separation(this, gameObjects, data.separationRadius) * data.separationWeight);
 			movement.ApplyForce(Steering.Alignment(this, gameObjects) * data.alignmentWeight);
 		}
+		
+		// obstacle avoidance
+		if (obstacleAvoidance.IsObstacleInFront())
+		{ 
+			Vector3 direction = obstacleAvoidance.GetOpenDirection();
+			movement.ApplyForce(Steering.CalculateSteering(this, direction) * data.obstacleWeight);
+		}
 
-
+		// wander
 		if (movement.acceleration.sqrMagnitude <= movement.maxForce * 0.1f)
 		{
 			movement.ApplyForce(Steering.Wander(this));
