@@ -24,6 +24,11 @@ public class Movement : MonoBehaviour
 		ApplyForce(direction * maxForce);
 	}
 
+	public void Stop()
+	{
+		velocity = Vector3.zero;
+	}
+
 	void LateUpdate()
 	{
 		velocity += acceleration * Time.deltaTime;
