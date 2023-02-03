@@ -12,7 +12,6 @@ public class NavNode : MonoBehaviour
 	public bool visited { get; set; } = false;
 	public float cost { get; set; } = float.MaxValue;
 
-
 	private void OnValidate()
 	{
 		GetComponent<SphereCollider>().radius = radius;
@@ -33,6 +32,21 @@ public class NavNode : MonoBehaviour
 	public static NavNode[] GetNodes()
 	{
 		return FindObjectsOfType<NavNode>();
+	}
+
+	public static NavNode[] GetNodesWithTag(string tag)
+	{
+		var gameObjects = GameObject.FindGameObjectsWithTag(tag);
+		List<NavNode> nodes = new List<NavNode>();
+		foreach (var go in gameObjects)
+		{
+			if (go.TryGetComponent<NavNode>(out NavNode navNode))
+			{
+				nodes.Add(navNode);
+			}
+		}
+
+		return nodes.ToArray();
 	}
 
 	public static NavNode GetRandomNode()
