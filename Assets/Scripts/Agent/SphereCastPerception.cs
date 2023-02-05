@@ -6,7 +6,7 @@ public class SphereCastPerception : Perception
 {
 	public Transform raycastTransform;
 	[Range(2, 50)] public int numRaycast = 2;
-	[Range(1, 10)] public float radius = 1;
+	[Range(0.1f, 10)] public float radius = 1;
 
 	public override GameObject[] GetGameObjects()
 	{
@@ -17,7 +17,7 @@ public class SphereCastPerception : Perception
 		{
 			// cast ray from transform position towards direction
 			Ray ray = new Ray(raycastTransform.position, raycastTransform.rotation * direction);
-			Debug.DrawRay(ray.origin, ray.direction * distance);
+			
 			if (Physics.SphereCast(ray, radius, out RaycastHit raycastHit, distance))
 			{
 				// don't perceive self
@@ -25,10 +25,18 @@ public class SphereCastPerception : Perception
 				// check for tag match
 				if (tagName == "" || raycastHit.collider.CompareTag(tagName))
 				{
-					Debug.DrawRay(ray.origin, ray.direction * distance, Color.red);
+					Debug.DrawRay(ray.origin, ray.direction * raycastHit.distance, Color.red);
 					// add game object if ray hit and tag matches
 					result.Add(raycastHit.collider.gameObject);
 				}
+				else
+				{
+					Debug.DrawRay(ray.origin, ray.direction * raycastHit.distance, Color.green);
+				}
+			}
+			else
+			{
+				Debug.DrawRay(ray.origin, ray.direction * distance);
 			}
 
 		}
@@ -40,25 +48,3 @@ public class SphereCastPerception : Perception
 	}
 }
 
-//// angle offset = angle between each ray
-//float angleOffset = (maxAngle * 2) / (numRaycast - 1);
-//for (int i = 0; i < numRaycast; i++)
-//{
-//	// set ray direction from rotation
-//	Quaternion rotation = Quaternion.AngleAxis(-maxAngle + (angleOffset * i), Vector3.up);
-//	Vector3 direction = rotation * raycastTransform.forward;
-
-//	// cast ray from transform position towards direction
-//	Ray ray = new Ray(raycastTransform.position, direction);
-//	if (Physics.Raycast(ray, out RaycastHit raycastHit, distance))
-//	{
-//		// don't perceive self
-//		if (raycastHit.collider.gameObject == gameObject) continue;
-//		// check for tag match
-//		if (tagName == "" || raycastHit.collider.CompareTag(tagName))
-//		{
-//			// add game object if ray hit and tag matches
-//			result.Add(raycastHit.collider.gameObject);
-//		}
-//	}
-//}
