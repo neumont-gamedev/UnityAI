@@ -28,8 +28,9 @@ public class PatrolState : State
 		{
 			owner.stateMachine.StartState(nameof(ChaseState));
 		}
+
 		timer -= Time.deltaTime;
-		if (timer < 0)
+		if (timer <= 0)
 		{
 			owner.stateMachine.StartState(nameof(WanderState));
 		}

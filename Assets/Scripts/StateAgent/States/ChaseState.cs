@@ -36,7 +36,7 @@ public class ChaseState : State
 			// get the angle between the owner forward vector and the direction vector
 			float angle = Vector3.Angle(owner.transform.forward, direction);
 			// if within range and angle, attack
-			if (distance < 2.5 && angle < 20)
+			if (distance < 1.5 && angle < 20)
 			{
 				owner.stateMachine.StartState(nameof(AttackState));
 			}

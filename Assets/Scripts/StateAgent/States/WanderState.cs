@@ -28,7 +28,7 @@ public class WanderState : State
 		// draw line from current position to target position
 		Debug.DrawLine(owner.transform.position, target);
 		owner.movement.MoveTowards(target);
-		if (owner.movement.velocity.sqrMagnitude == 0)
+		if (owner.movement.velocity.magnitude == 0)
 		{
 			owner.stateMachine.StartState(nameof(IdleState));
 		}
